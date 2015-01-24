@@ -137,7 +137,7 @@ task main(){
 	/*|																			Must be set PRIOR to using the Program															|*/
 	/*===========================================================================================================*/
 	int threshold = 30;							//Amount of Deadzone applied to Joysticks - Higher = Larger Deadzone				  |
-	int throttlePercent = 90;				//Percetage of Throttle the motors recive - Percentage Based (0% - 100%)			|
+	int throttlePercent = 90;				//Maximum Amount of Power to Give Motors - Percentage Based (0% - 100%)	   		|
 	int closeValueRight = 0;				//Value of the Potentiometer when the RIGHT CLAW is CLOSED										|
 	int openValueRight = 0;					//Value of the Potentiometer when the RIGHT CLAW is OPEN											|
 	int closeValueLeft = 0;					//Value of the Potentiometer when the LEFT CLAW is CLOSED											|
