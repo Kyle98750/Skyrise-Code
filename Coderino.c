@@ -26,6 +26,9 @@ bool isPressed(int button){
 	}
 	return isPressed;
 }
+//Converts a given number into a percentage of another number. Ex. 10 and 100 passed in will yeild 10 (10%)
+//2 Parameters passed into function.
+//Ex. toPercent(integer, integer)
 int toPercent(int x, int max){
 	int y;
 	y = (x / max);
@@ -47,11 +50,11 @@ int applyThingsNStuff(int joyValue, int threshold, int throttle){
 			}else{
 			trueValue = joyValue;
 		}
-		}else if(toPercent(joyValue, 124 >= throttle)){
+		}else if(toPercent(joyValue, 124) >= throttle){
 		if(abs(joyValue) < threshold){
 			trueValue = 0;
 			}else{
-			trueValue = joyValue - (joyValue * (throttle / 100));
+			trueValue = joyValue * (throttle / 100);
 		}
 	}
 	return trueValue;
@@ -93,62 +96,63 @@ int doActiveClaw(int button, int maxSpeed, bool isReversed){
 		}else if(isPressed(button) && isReversed == false){
 		motorValue = maxSpeed;
 	}
-return motorValue;
+	return motorValue;
 }
 //Assigns 2 buttons to moving the claw arm forward and backward
 //3 Parameters passed into the function, Button, Button, Maximum Speed
 //Ex. doClawLift(vexRT[button], vexRT[button], integer)
 int doClawLift(int button1, int button2, int maxSpeed, bool isReversed){
-int motorValue;
-if(isReversed){
-	if(isPressed(button1)){
-		motorValue = maxSpeed;
-		}else if(isPressed(button2)){
-		motorValue = 0 - maxSpeed;
+	int motorValue;
+	if(isReversed){
+		if(isPressed(button1)){
+			motorValue = 0 - maxSpeed;
+			}else if(isPressed(button2)){
+			motorValue = maxSpeed;
+		}
+		}else if(isReversed == false){
+		if(isPressed(button1)){
+			motorValue = 0 - maxSpeed;
+			}else if(isPressed(button2)){
+			motorValue = maxSpeed;
+		}
 	}
-	}else if(isReversed == false){
-	if(isPressed(button1)){
-		motorValue = 0 - maxSpeed;
-		}else if(isPressed(button2)){
-		motorValue = maxSpeed;
-	}
-}
-return motorValue;
+	return motorValue;
 }
 //Determines if the user is using the active or passive claw controls defined by the "doActiveClaw" and "doPassiveClaw" functions
 //6 Parameters passed into the function, Passive Action Button, Open Button, Close Button, Maximum Speed, Poentiometer, Potentiometer Claw Closed Value, Potentiometer, Claw Open Value
 //Ex. setClaw(vexRT[buttonPassive], vexRT[buttonActive1], vexRT[buttonActive2], integer, integer, integer, integer)
 int setClaw(int buttonPassive, int buttonActive1, int buttonActive2, int maxSpeed, int potentiometer, int closeValue, int openValue){
-int motorValue;
-if(buttonPassive){
-	motorValue = doPassiveClaw(buttonPassive, maxSpeed, potentiometer, closeValue, openValue);
-	}else if(buttonActive1){
-	motorValue = doActiveClaw(buttonActive1, maxSpeed, false);
-	}else if(buttonActive2){
-	motorValue = doActiveClaw(buttonActive2, maxSpeed, true);
-}
-return motorValue;
+	int motorValue;
+	if(buttonPassive){
+		motorValue = doPassiveClaw(buttonPassive, maxSpeed, potentiometer, closeValue, openValue);
+		}else if(buttonActive1){
+		motorValue = doActiveClaw(buttonActive1, maxSpeed, false);
+		}else if(buttonActive2){
+		motorValue = doActiveClaw(buttonActive2, maxSpeed, true);
+	}
+	return motorValue;
 }
 task main(){
-/*																			Must be set PRIOR to using the Program															 */
-/*===========================================================================================================*/
-int threshold = 30;							//Amount of Deadzone applied to Joysticks - Higher = Larger Deadzone				  |
-int throttlePercent = 5;				//Percetage of Throttle the motors recive - Percentage Based (0 - 100)				|
-int closeValueRight = 0;				//Value of the Potentiometer when the RIGHT CLAW is CLOSED										|
-int openValueRight = 0;					//Value of the Potentiometer when the RIGHT CLAW is OPEN											|
-int closeValueLeft = 0;					//Value of the Potentiometer when the LEFT CLAW is CLOSED											|
-int openValueLeft = 0;					//Value of the Potentiometer when the LEFT CLAW is OPEN												|
-/*============================================================================================================*/
-while(true){
-	//Primary Controller Controls
-	motor[motorLeft] = setMotorLeftVal(applyThingsNStuff(vexRT[Ch3], threshold, throttlePercent), applyThingsNStuff(vexRT[Ch1], threshold, throttlePercent));
-	motor[motorRight] = setMotorRightVal(applyThingsNStuff(vexRT[Ch3], threshold, throttlePercent), applyThingsNStuff(vexRT[Ch1], threshold, throttlePercent));
-	motor[motorClaw1] = setClaw(vexRT[Btn5U], vexRT[Btn7L], vexRT[Btn7R], 127, SensorValue[potentio1], closeValueLeft, openValueLeft);
-	motor[motorLeftLift1] = doClawLift(vexRT[Btn7U], vexRT[Btn7D], 127, false);
-	motor[motorLeftLift2] = doClawLift(vexRT[Btn7U], vexRT[Btn7D], 127, false);
-	//Secondary Controller Controls
-	motor[motorClaw2] = setClaw(vexRT[Btn5UXmtr2], vexRT[Btn7LXmtr2], vexRT[Btn7RXmtr2], 127, SensorValue[potentio2], closeValueRight, openValueRight);
-	motor[motorRightLift1] = doClawLift(vexRT[Btn7UXmtr2], vexRT[Btn7DXmtr2], 127, false);
-	motor[motorRightLift2] = doClawLift(vexRT[Btn7UXmtr2], vexRT[Btn7DXmtr2], 127, false);
-}
+	/*===========================================================================================================*/
+	/*|																			Must be set PRIOR to using the Program															|*/
+	/*===========================================================================================================*/
+	int threshold = 30;							//Amount of Deadzone applied to Joysticks - Higher = Larger Deadzone				  |
+	int throttlePercent = 90;				//Percetage of Throttle the motors recive - Percentage Based (0% - 100%)			|
+	int closeValueRight = 0;				//Value of the Potentiometer when the RIGHT CLAW is CLOSED										|
+	int openValueRight = 0;					//Value of the Potentiometer when the RIGHT CLAW is OPEN											|
+	int closeValueLeft = 0;					//Value of the Potentiometer when the LEFT CLAW is CLOSED											|
+	int openValueLeft = 0;					//Value of the Potentiometer when the LEFT CLAW is OPEN												|
+	/*============================================================================================================*/
+	while(true){
+		//Primary Controller Controls
+		motor[motorLeft] = setMotorLeftVal(applyThingsNStuff(vexRT[Ch3], threshold, throttlePercent), applyThingsNStuff(vexRT[Ch1], threshold, throttlePercent));
+		motor[motorRight] = setMotorRightVal(applyThingsNStuff(vexRT[Ch3], threshold, throttlePercent), applyThingsNStuff(vexRT[Ch1], threshold, throttlePercent));
+		motor[motorClaw1] = setClaw(vexRT[Btn5U], vexRT[Btn7L], vexRT[Btn7R], 127, SensorValue[potentio1], closeValueLeft, openValueLeft);
+		motor[motorLeftLift1] = doClawLift(vexRT[Btn7U], vexRT[Btn7D], 127, false);
+		motor[motorLeftLift2] = doClawLift(vexRT[Btn7U], vexRT[Btn7D], 127, false);
+		//Secondary Controller Controls
+		motor[motorClaw2] = setClaw(vexRT[Btn5UXmtr2], vexRT[Btn7LXmtr2], vexRT[Btn7RXmtr2], 127, SensorValue[potentio2], closeValueRight, openValueRight);
+		motor[motorRightLift1] = doClawLift(vexRT[Btn7UXmtr2], vexRT[Btn7DXmtr2], 127, false);
+		motor[motorRightLift2] = doClawLift(vexRT[Btn7UXmtr2], vexRT[Btn7DXmtr2], 127, false);
+	}
 }
